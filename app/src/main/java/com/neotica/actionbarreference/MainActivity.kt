@@ -1,10 +1,14 @@
 package com.neotica.actionbarreference
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import com.neotica.actionbarreference.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +25,31 @@ class MainActivity : AppCompatActivity() {
         val inflater = menuInflater
         //Step 12: Inflate option menu from menu resource
         inflater.inflate(R.menu.option_menu, menu)
+
+        //Step 19: Create a new variable that gets SEARCH_SERVICE
+        //from getSystemService as SearchManager
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        //Step 20: Create a new variable that define the search from menu resource as SearchView
+        val searchView = menu?.findItem(R.id.search)?.actionView as SearchView
+
+        //Step 21: Setup Searchable Info
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        //Step 22: Setup a string resource (abc_search_hint) that provides the default hint text for the searchView.
+        searchView.queryHint = resources.getString(androidx.appcompat.R.string.abc_search_hint)
+        //Step 23: setOnQueryTextListener
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            //Step 24: When search has been OK'ed
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //Step 25: Provides the value on OK'ed
+                Toast.makeText(this@MainActivity, query, Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+
         //Step 13: return to boolean true
         return true
     }
